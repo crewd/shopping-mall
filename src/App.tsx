@@ -11,7 +11,6 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Gnb />
       {elem}
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
