@@ -1,15 +1,15 @@
-import { SyntheticEvent, useRef } from "react";
+import { createRef, SyntheticEvent, useRef } from "react";
 import { CartType } from "../../graphql/cart";
 import CartItem from "./item";
 
 const CartList = ({ items }: { items: CartType[] }) => {
   const formRef = useRef<HTMLFormElement>(null);
+  const checkboxRefs = items.map(() => createRef<HTMLInputElement>());
 
   const handleCheckboxChanged = (e: SyntheticEvent) => {
     if (!formRef.current) {
       return;
     };
-    const checkBoxs = formRef.current.querySelectorAll<HTMLInputElement>('.cart-item__checkbox')
     const targetInput = e.target as HTMLInputElement;
     const data = new FormData(formRef.current);
     const selectedCount = data.getAll('select-item').length;
@@ -17,8 +17,8 @@ const CartList = ({ items }: { items: CartType[] }) => {
     // select-all 선택시
     if (targetInput.classList.contains('select-all')) {
       const allChecked = targetInput.checked
-      checkBoxs.forEach(inputElem => {
-        inputElem.checked = allChecked;
+      checkboxRefs.forEach(inputElem => {
+        inputElem.current!.checked = allChecked;
       })
     }
 
@@ -36,8 +36,8 @@ const CartList = ({ items }: { items: CartType[] }) => {
         전체선택
       </label>
       <ul className="cart">
-        {items.map(item => (
-          <CartItem {...item} key={item.id} />
+        {items.map((item, i) => (
+          <CartItem {...item} key={item.id} ref={checkboxRefs[i]} />
         ))}
       </ul>
     </form>
