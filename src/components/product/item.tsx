@@ -4,7 +4,7 @@ import { ADD_CART } from '../../graphql/cart';
 import { Product } from '../../graphql/products';
 import { graphqlFetcher } from '../../queryClient';
 
-const Productitem = ({
+const ProductItem = ({
   description,
   id,
   imageUrl,
@@ -27,4 +27,4 @@ const Productitem = ({
 
 }
 
-export default Productitem;
+export default ProductItem;
