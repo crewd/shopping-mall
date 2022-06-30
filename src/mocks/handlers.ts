@@ -61,13 +61,16 @@ export const handlers = [
   graphql.mutation(UPDATE_CART, (req, res, ctx) => {
     const newData = { ...cartData };
     const { id, amount } = req.variables;
+
     if (!newData[id]) {
       throw new Error("없는 데이터입니다");
     }
+
     const newItem = {
       ...newData[id],
       amount,
     };
+
     newData[id] = newItem;
     cartData = newData;
     return res(ctx.data(newItem));

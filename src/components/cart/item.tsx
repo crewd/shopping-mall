@@ -50,7 +50,12 @@ const CartItem = ({ id, imageUrl, price, title, amount }: CartType) => {
   )
 
   const handleUpdateAmount = (e: SyntheticEvent) => {
-    const amount = Number((e.target as HTMLInputElement).value)
+    const amount = Number((e.target as HTMLInputElement).value);
+
+    if (amount < 1) {
+      return;
+    };
+
     updateCart({ id, amount })
   }
 
@@ -60,7 +65,7 @@ const CartItem = ({ id, imageUrl, price, title, amount }: CartType) => {
 
   return (
     <li className="cart-item">
-      <input className='cart-item__checkbox' type="checkbox" />
+      <input className='cart-item__checkbox' name='select-item' type="checkbox" />
       <img className="cart-item__image" src={imageUrl} />
       <p className="cart-item__price">{price}</p>
       <p className="cart-item__title">{title}</p>
@@ -68,6 +73,7 @@ const CartItem = ({ id, imageUrl, price, title, amount }: CartType) => {
         className="cart-item__amount"
         type="number"
         value={amount}
+        min={1}
         onChange={handleUpdateAmount}
       />
       <button className='cart-item__button' onClick={handleDeleteItem}>삭제</button>
