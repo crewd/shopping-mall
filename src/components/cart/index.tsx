@@ -1,46 +1,90 @@
-import { createRef, SyntheticEvent, useRef } from "react";
+import { createRef, SyntheticEvent, useEffect, useRef, useState } from "react";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { CartType } from "../../graphql/cart";
+import { checkedCartState } from "../../recoils/cart";
 import CartItem from "./item";
+import WillPay from "./willPay";
 
 const CartList = ({ items }: { items: CartType[] }) => {
+  const [formData, setFormData] = useState<FormData>();
+  const [checkedCartData, setCheckedCartData] = useRecoilState(checkedCartState);
   const formRef = useRef<HTMLFormElement>(null);
   const checkboxRefs = items.map(() => createRef<HTMLInputElement>());
 
-  const handleCheckboxChanged = (e: SyntheticEvent) => {
+  // 개별 아이템 선택시
+  const setAllCheckedFormItems = () => {
+    if (!formRef.current) {
+      return;
+    }
+    const data = new FormData(formRef.current);
+    const selectedCount = data.getAll('select-item').length;
+    const allChecked = (selectedCount === items.length);
+    formRef.current.querySelector<HTMLInputElement>('.select-all')!.checked = allChecked
+
+  }
+
+  // select-all 선택시
+  const setItemsCheckedFromAll = (targetInput: HTMLInputElement) => {
+    const allChecked = targetInput.checked
+    checkboxRefs.forEach(inputElem => {
+      inputElem.current!.checked = allChecked;
+    })
+  }
+
+  const handleCheckboxChanged = (e?: SyntheticEvent) => {
     if (!formRef.current) {
       return;
     };
-    const targetInput = e.target as HTMLInputElement;
-    const data = new FormData(formRef.current);
-    const selectedCount = data.getAll('select-item').length;
 
-    // select-all 선택시
-    if (targetInput.classList.contains('select-all')) {
-      const allChecked = targetInput.checked
-      checkboxRefs.forEach(inputElem => {
-        inputElem.current!.checked = allChecked;
-      })
+    const targetInput = e?.target as HTMLInputElement;
+
+    if (targetInput && targetInput.classList.contains('select-all')) {
+      setItemsCheckedFromAll(targetInput)
     }
 
-    // 개별 아이템 선택시
     else {
-      const allChecked = (selectedCount === items.length);
-      formRef.current.querySelector<HTMLInputElement>('.select-all')!.checked = allChecked
+      setAllCheckedFormItems()
     }
+
+    const data = new FormData(formRef.current);
+    setFormData(data);
   }
 
+  useEffect(() => {
+    checkedCartData.forEach((item) => {
+      const itemRef = checkboxRefs.find(ref => ref.current!.dataset.id === item.id);
+      if (itemRef) {
+        itemRef.current!.checked = true;
+      }
+    })
+    setAllCheckedFormItems()
+  }, [])
+
+  useEffect(() => {
+    const checkedItems = checkboxRefs.reduce<CartType[]>((res, ref, i) => {
+      if (ref.current!.checked) {
+        res.push(items[i])
+      }
+      return res;
+    }, [])
+    setCheckedCartData(checkedItems);
+  }, [items, formData])
+
   return (
-    <form ref={formRef} onChange={handleCheckboxChanged}>
-      <label>
-        <input className="select-all" name="select-all" type="checkbox" />
-        전체선택
-      </label>
-      <ul className="cart">
-        {items.map((item, i) => (
-          <CartItem {...item} key={item.id} ref={checkboxRefs[i]} />
-        ))}
-      </ul>
-    </form>
+    <div>
+      <form ref={formRef} onChange={handleCheckboxChanged}>
+        <label>
+          <input className="select-all" name="select-all" type="checkbox" />
+          전체선택
+        </label>
+        <ul className="cart">
+          {items.map((item, i) => (
+            <CartItem {...item} key={item.id} ref={checkboxRefs[i]} />
+          ))}
+        </ul>
+      </form>
+      <WillPay />
+    </div>
   )
 }
 

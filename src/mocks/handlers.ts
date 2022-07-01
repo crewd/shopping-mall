@@ -58,6 +58,7 @@ export const handlers = [
 
     return res(ctx.data(newItem));
   }),
+
   graphql.mutation(UPDATE_CART, (req, res, ctx) => {
     const newData = { ...cartData };
     const { id, amount } = req.variables;
@@ -75,6 +76,7 @@ export const handlers = [
     cartData = newData;
     return res(ctx.data(newItem));
   }),
+
   graphql.mutation(DELETE_CART, ({ variables: { id } }, res, ctx) => {
     const newData = { ...cartData };
     delete newData[id];
