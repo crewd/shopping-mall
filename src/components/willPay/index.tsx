@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil"
 import { checkedCartState } from "../../recoils/cart"
-import ItemData from "./itemData";
+import ItemData from "../cart/itemData";
 
 const WillPay = () => {
   const navigate = useNavigate();
