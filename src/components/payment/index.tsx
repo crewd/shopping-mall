@@ -22,9 +22,9 @@ const Payment = () => {
 
   const queryClient = getClient();
 
-  const { mutate: excutePay } = useMutation(
-    (payInfos: PaymentInfos) => graphqlFetcher(EXCUTE_PAY, payInfos),
-  )
+  // const { mutate: excutePay } = useMutation(
+  //   (payInfos: PaymentInfos) => graphqlFetcher(EXCUTE_PAY, payInfos),
+  // )
 
   const showModal = () => {
     toggleModal(true);
@@ -35,7 +35,7 @@ const Payment = () => {
     const payInfos = checkedCartData.map(({ id, amount }) => {
       return { id, amount };
     })
-    excutePay(payInfos);
+    // excutePay(payInfos);
     setCheckedCartData([]);
     navigate('/products', { replace: true })
   }

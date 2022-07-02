@@ -14,11 +14,13 @@ const PaymentModal = ({
 }) => {
   return show ? (
     <ModalPortal>
-      <div>
-        <p>결제 하시겠습니까?</p>
-        <div>
-          <button onClick={proceed}>예</button>
-          <button onClick={cancel}>아니오</button>
+      <div className={`modal ${show ? 'show' : ''}`}>
+        <div className="modal__inner">
+          <p>결제 하시겠습니까?</p>
+          <div>
+            <button onClick={proceed}>예</button>
+            <button onClick={cancel}>아니오</button>
+          </div>
         </div>
       </div>
     </ModalPortal>

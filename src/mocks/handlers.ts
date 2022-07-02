@@ -7,6 +7,7 @@ import {
   UPDATE_CART,
   DELETE_CART,
 } from "../graphql/cart";
+import { EXCUTE_PAY } from "../graphql/payment";
 import { GET_PRODUCTS, GET_PRODUCT } from "../graphql/products";
 
 const mockProducts = (() =>
@@ -83,4 +84,8 @@ export const handlers = [
     cartData = newData;
     return res(ctx.data(id));
   }),
+
+  // graphql.mutation(EXCUTE_PAY, ({variables}, res, ctx) => {
+
+  // })
 ];
